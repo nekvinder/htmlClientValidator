@@ -1,0 +1,22 @@
+.aura-field input {
+  border: 2px solid #f0f0f0;
+  border-radius: 4px;
+  display: block;
+  font-size: 12px;
+  padding: 10px;
+  width: 100%;
+}
+
+.aura-field.error input {
+  border-color: #ff3860;
+}
+
+.aura-field .error {
+  color: #ff3860;
+  font-size: 9px;
+  height: 13px;
+}
+
+.iti__flag-container {
+  display: none;
+}
