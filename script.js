@@ -68,7 +68,6 @@ function validatePhone() {
 
 function buttonValidator() {
   const isValid = validateName() && validateEmail() && validatePhone();
-
   submitButton.disabled = !isValid;
   submitButton.style.opacity = isValid ? 1 : 0.5;
 }
