@@ -1,50 +1,55 @@
-var phoneInput = document.querySelector("#phone");
-var iti = window.intlTelInput(phoneInput, {
+const phoneInput = document.querySelector("#phone");
+const iti = window.intlTelInput(phoneInput, {
   initialCountry: "auto",
   utilsScript:
     "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.0/js/utils.js",
 });
 
+function setInvalid(fieldName, fieldErrorName, errorMessage) {
+  document.getElementById(fieldErrorName).textContent = errorMessage;
+  const color = errorMessage === "" ? "black" : "red";
+  document.getElementById(fieldName).style.borderColor = color;
+}
+
 function validateName() {
-  var firstName = document.getElementById("name").value;
-  document.getElementById("nameError").textContent = "";
-  document.getElementById("name").style.borderColor = "";
-  if (firstName === "") {
-    document.getElementById("nameError").textContent =
-      "First name is mandatory!";
-    document.getElementById("name").style.borderColor = "red";
-    isValid = false;
-  } else if (firstName.length < 3) {
-    document.getElementById("nameError").textContent =
-      "First name is too short!";
-    document.getElementById("name").style.borderColor = "red";
-    isValid = false;
+  const fieldName = "name";
+  const fieldErrorName = "nameError";
+
+  setInvalid(fieldName, fieldErrorName, "");
+  const userName = document.getElementById("name").value;
+  if (userName === "") {
+    setInvalid(fieldName, fieldErrorName, "Name is mandatory!");
+    return false;
+  } else if (userName.length < 3) {
+    setInvalid(fieldName, fieldErrorName, "Name is too short!");
+    return false;
   }
+  return true;
 }
 
 function validateEmail() {
-  var email = document.getElementById("email").value;
-  var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  document.getElementById("emailError").textContent = "";
-  document.getElementById("email").style.borderColor = "";
+  const fieldName = "email";
+  const fieldErrorName = "emailError";
+
+  const email = document.getElementById("email").value;
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  setInvalid(fieldName, fieldErrorName, "");
   if (email === "") {
-    document.getElementById("emailError").textContent = "Email is mandatory!";
-    document.getElementById("email").style.borderColor = "red";
-    isValid = false;
+    setInvalid(fieldName, fieldErrorName, "Email is mandatory!");
+    return false;
   } else if (!email.match(emailPattern)) {
-    document.getElementById("emailError").textContent = "Invalid email format.";
-    document.getElementById("email").style.borderColor = "red";
-    isValid = false;
+    setInvalid(fieldName, fieldErrorName, "Invalid email address");
+    return false;
   }
+  return true;
 }
 
 function validatePhone() {
-  var phone = iti.getNumber();
-  var submitButton = document.getElementById("submitButton");
+  const phone = iti.getNumber();
 
   function isValidPhoneNumber(phoneNumber) {
     try {
-      var parsedPhoneNumber =
+      const parsedPhoneNumber =
         window.libphonenumber.parsePhoneNumberFromString(phoneNumber);
       return parsedPhoneNumber && parsedPhoneNumber.isValid();
     } catch (error) {
@@ -52,36 +57,38 @@ function validatePhone() {
     }
   }
 
+  setInvalid("phone", "phoneError", "");
   if (phone === "") {
-    document.getElementById("phoneError").textContent = "Phone is mandatory!";
-    document.getElementById("phone").style.borderColor = "red";
-    isValid = false;
+    setInvalid("phone", "phoneError", "Phone is mandatory!");
+    return false;
   } else if (!phone || !isValidPhoneNumber(phone)) {
-    document.getElementById("phoneError").textContent = "Invalid phone number";
-    document.getElementById("phone").style.borderColor = "red";
-    isValid = false;
+    setInvalid("phone", "phoneError", "Invalid phone number");
+    return false;
   }
-
-  document.getElementById("phoneError").textContent = "";
-  document.getElementById("phone").style.borderColor = "";
+  return true;
 }
 
 function buttonValidator() {
+  const submitButton = document.getElementById("submitButton");
   const isValid = validateName() && validateEmail() && validatePhone();
   submitButton.disabled = !isValid;
   submitButton.style.opacity = isValid ? 1 : 0.5;
 }
 
-document.getElementById("name").addEventListener("input", function() {
+const eventName = "blur";
+document.getElementById("name").addEventListener(eventName, function() {
   validateName();
+  buttonValidator();
 });
 
-document.getElementById("email").addEventListener("input", function() {
+document.getElementById("email").addEventListener(eventName, function() {
   validateEmail();
+  buttonValidator();
 });
 
-phoneInput.addEventListener("input", function() {
+phoneInput.addEventListener(eventName, function() {
   validatePhone();
+  buttonValidator();
 });
 
 // // Import intlTelInput
